@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
 PRACTICUM_TOKEN = os.getenv("PRACTICUM_TOKEN")
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
@@ -26,18 +25,11 @@ def parse_homework_status(homework):
 def get_homework_statuses(current_timestamp):
     headers = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
     params = {'from_date': current_timestamp}
-    while True:
-        try:
-            homework_statuses = requests.get(
-                API_URL,
-                headers=headers,
-                params=params)
-            return homework_statuses.json()
-
-        except (requests.ConnectionError, requests.RequestException) as e:
-            logging.error(f'Бот упал с ошибкой: {e}')
-            time.sleep(10)
-            continue
+    homework_statuses = requests.get(
+        API_URL,
+        headers=headers,
+        params=params)
+    return homework_statuses.json()
 
 
 def send_message(message):
@@ -47,13 +39,6 @@ def send_message(message):
 
 def main():
     current_timestamp = int(time.time())
-    try:
-        if current_timestamp != None:
-            print('pass')
-        else:
-            raise TypeError
-    except TypeError:
-        print(f'Бот упал с ошибкой: {e}')
 
     while True:
         try:
