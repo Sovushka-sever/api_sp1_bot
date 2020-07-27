@@ -22,7 +22,7 @@ def parse_homework_status(homework):
         else:
             verdict = 'Ревьюеру всё понравилось, можно приступать к следующему уроку.'
 
-    except Exception as e:
+    except KeyError as e:
         logging.error(f'Бот упал с ошибкой: {e}')
     return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
 
