@@ -1,4 +1,3 @@
-import logging
 import os
 import requests
 import telegram
@@ -10,7 +9,6 @@ load_dotenv()
 PRACTICUM_TOKEN = os.getenv("PRACTICUM_TOKEN")
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
-FROM_CURRENT_DATE = os.getenv('FROM_CURRENT_DATE')
 API_URL = 'https://praktikum.yandex.ru/api/user_api/homework_statuses/'
 
 
@@ -43,7 +41,7 @@ def main():
 
     while True:
         try:
-            new_homework = get_homework_statuses(current_timestamp - int(FROM_CURRENT_DATE))
+            new_homework = get_homework_statuses(current_timestamp)
             if new_homework.get('homeworks'):
                 send_message(parse_homework_status(new_homework.get('homeworks')[0]))
             current_timestamp = new_homework.get('current_date')
