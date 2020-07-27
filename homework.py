@@ -15,15 +15,11 @@ API_URL = 'https://praktikum.yandex.ru/api/user_api/homework_statuses/'
 
 
 def parse_homework_status(homework):
-    try:
-        homework_name = homework['homework_name']
-        if homework['status'] == 'rejected':
-            verdict = 'К сожалению в работе нашлись ошибки.'
-        else:
-            verdict = 'Ревьюеру всё понравилось, можно приступать к следующему уроку.'
-
-    except KeyError as e:
-        logging.error(f'Бот упал с ошибкой: {e}')
+    homework_name = homework['homework_name']
+    if homework['status'] == 'rejected':
+        verdict = 'К сожалению в работе нашлись ошибки.'
+    else:
+        verdict = 'Ревьюеру всё понравилось, можно приступать к следующему уроку.'
     return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
 
 
@@ -63,13 +59,8 @@ def main():
         try:
             new_homework = get_homework_statuses(current_timestamp)
             if new_homework.get('homeworks'):
-                send_message(
-                    parse_homework_status(
-                        new_homework.get(
-                            'homeworks')[0]))
-            current_timestamp = new_homework.get(
-                'current_date'
-            )
+                send_message(parse_homework_status(new_homework.get('homeworks')[0]))
+            current_timestamp = new_homework.get('current_date')
             time.sleep(300)
 
         except Exception as e:
