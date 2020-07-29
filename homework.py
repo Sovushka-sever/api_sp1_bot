@@ -13,14 +13,20 @@ CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 API_URL = 'https://praktikum.yandex.ru/api/user_api/{method}/'
 bot = telegram.Bot(token=TELEGRAM_TOKEN)
 
+available_statuses = {
+    "approved": 'Ревьюеру всё понравилось, можно приступать к следующему уроку.',
+    "rejected": 'К сожалению в работе нашлись ошибки.'
+}
+
 
 def parse_homework_status(homework):
     homework_name = homework.get('homework_name')
-    if homework.get('status') != 'approved':
-        verdict = 'К сожалению в работе нашлись ошибки.'
+    homework_status = homework.get('status')
+    if homework_status in available_statuses:
+        verdict = available_statuses[homework_status]
+        return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
     else:
-        verdict = 'Ревьюеру всё понравилось, можно приступать к следующему уроку.'
-    return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
+        raise KeyError(f'Несуществующий статус {homework_status}')
 
 
 def get_homework_statuses(current_timestamp):
@@ -36,7 +42,7 @@ def get_homework_statuses(current_timestamp):
         return homework_statuses.json()
     except Exception as e:
         logging.exception(f'Произошла ошибка {e}')
-        return str(e)
+        return {}
 
 
 def send_message(message):
@@ -57,7 +63,7 @@ def main():
             time.sleep(300)
 
         except Exception as e:
-            print(f'Бот упал с ошибкой: {e}')
+            logging.exception(f'Бот упал с ошибкой: {e}')
             time.sleep(5)
             continue
 
